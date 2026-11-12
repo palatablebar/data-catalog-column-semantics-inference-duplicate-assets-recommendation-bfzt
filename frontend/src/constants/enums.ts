@@ -78,3 +78,16 @@ export const VERDICT_LABELS: Record<string, string> = {
   review: '需人工复核',
   weak: '弱相似',
 }
+
+export const TAG_SYNC_STATE_LABELS: Record<string, string> = {
+  apply: '待补标',
+  skipped: '跳过',
+  conflict: '语义冲突',
+}
+
+export const TAG_SYNC_REASON_LABELS: Record<string, string> = {
+  tag_exists: '目标列已有同名标签，保留原结论',
+  sensitive_exists: '目标列已有敏感结论，保留原结论不覆盖',
+  semantic_type_conflict: '两列语义类型不一致，跳过传播',
+  no_manual_sensitive_tag: '没有人工确认的敏感标签可传播',
+}

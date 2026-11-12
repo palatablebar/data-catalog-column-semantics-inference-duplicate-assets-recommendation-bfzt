@@ -7,6 +7,7 @@ const MATRIX: Record<string, Role[]> = {
   'duplicate:recompute': ['admin'],
   'duplicate:merge': ['admin'],
   'duplicate:dismiss': ['admin', 'analyst'],
+  'tag:sync': ['admin', 'analyst', 'viewer'],
   'tag:write': ['admin', 'analyst', 'viewer'],
   'export:run': ['admin', 'analyst', 'viewer'],
   'audit:read': ['admin'],

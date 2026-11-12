@@ -32,6 +32,7 @@ ROLE_PERMISSIONS: dict[str, set[str]] = {
     "duplicate:dismiss": {Role.ADMIN, Role.ANALYST},
     "tag:read": {Role.ADMIN, Role.ANALYST, Role.VIEWER},
     "tag:write": {Role.ADMIN, Role.ANALYST, Role.VIEWER},
+    "tag:sync": {Role.ADMIN, Role.ANALYST, Role.VIEWER},
     "ingest:read": {Role.ADMIN, Role.ANALYST, Role.VIEWER},
     "ingest:run": {Role.ADMIN},
     "export:run": {Role.ADMIN, Role.ANALYST, Role.VIEWER},

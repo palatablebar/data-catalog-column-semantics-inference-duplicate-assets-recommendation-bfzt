@@ -4,7 +4,7 @@ from __future__ import annotations
 from sqlalchemy.orm import Session
 
 from src.models.user import User
-from src.services import duplicate_service
+from src.services import duplicate_service, tag_sync_service
 
 
 def recompute(db: Session, user: User, top_n: int | None, min_score: float | None) -> dict:
@@ -25,3 +25,11 @@ def merge_suggestion(db: Session, pair_id: str, user: User) -> dict:
 
 def dismiss(db: Session, pair_id: str, note: str, user: User) -> dict:
     return duplicate_service.dismiss(db, pair_id, note, user)
+
+
+def sync_preview(db: Session, pair_id: str) -> dict:
+    return tag_sync_service.preview(db, pair_id)
+
+
+def sync_apply(db: Session, pair_id: str, user: User) -> dict:
+    return tag_sync_service.apply_sync(db, pair_id, user)

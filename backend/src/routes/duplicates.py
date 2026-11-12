@@ -58,3 +58,22 @@ def dismiss(
     _: User = rate_limit("dismiss"),
 ) -> dict:
     return duplicate_controller.dismiss(db, pair_id, payload.note, user)
+
+
+@router.get("/{pair_id}/tag-sync/preview")
+def tag_sync_preview(
+    pair_id: str,
+    db: Session = Depends(get_db),
+    _: User = Depends(require_permission("tag:sync")),
+) -> dict:
+    return duplicate_controller.sync_preview(db, pair_id)
+
+
+@router.post("/{pair_id}/tag-sync/apply")
+def tag_sync_apply(
+    pair_id: str,
+    db: Session = Depends(get_db),
+    user: User = Depends(require_permission("tag:sync")),
+    _: User = rate_limit("tag"),
+) -> dict:
+    return duplicate_controller.sync_apply(db, pair_id, user)

@@ -1,5 +1,5 @@
 import { http } from './http'
-import type { SimilarityPair } from '../types/models'
+import type { SimilarityPair, TagSyncApplyResult, TagSyncPreview } from '../types/models'
 
 export async function fetchPairs(limit = 5) {
   const { data } = await http.get('/duplicates', { params: { limit } })
@@ -30,4 +30,14 @@ export async function generateMergeSuggestion(pairId: string) {
 export async function dismissPair(pairId: string, note = '人工确认非重复') {
   const { data } = await http.post(`/duplicates/${pairId}/dismiss`, { note })
   return data
+}
+
+export async function previewTagSync(pairId: string) {
+  const { data } = await http.get(`/duplicates/${pairId}/tag-sync/preview`)
+  return data as TagSyncPreview
+}
+
+export async function applyTagSync(pairId: string) {
+  const { data } = await http.post(`/duplicates/${pairId}/tag-sync/apply`)
+  return data as TagSyncApplyResult
 }

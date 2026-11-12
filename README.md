@@ -24,8 +24,9 @@
 2. **列语义推断校验** `/columns`：6 类正则 + 列名词典 + 基数/空值特征加权，展示证据（命中样本前 3）与置信度；支持人工纠正（记录 `manual` 来源）。
 3. **相似表推荐** `/duplicates`：MinHash k=128 + 16 带×8 行 LSH 候选 → 精确 Jaccard + 列名结构相似；并排列级 diff + 合并建议（下线表 / 保留列并集）。
 4. **标签与敏感列** `/tags`：manual/inferred 双来源标签；viewer 可批量补打 `sensitive:high`。
-5. **采集任务** `/ingest`：Celery worker 读取 `sample` schema 的 5 张样例表（各 300 行），逐列统计落库；任务状态可轮询。
-6. **导出目录 CSV**：`GET /api/assets/export.csv`，含资产 / 列 / 推断类型 / 标签。
+5. **敏感标签同步预览** `/duplicates`：在相似表对上只传播人工确认（manual）的 `sensitive:*` 结论——先预览补标 / 跳过 / 冲突三类计数与原因，确认应用后只补目标表缺失标签；已有判断保留原结论，语义冲突列说明跳过原因；重复执行幂等不新增，写入失败整体回滚（两表保持原样）。
+6. **采集任务** `/ingest`：Celery worker 读取 `sample` schema 的 5 张样例表（各 300 行），逐列统计落库；任务状态可轮询。
+7. **导出目录 CSV**：`GET /api/assets/export.csv`，含资产 / 列 / 推断类型 / 标签。
 
 ## 两个核心算法（Python 真算，结果落库，前端只展示）
 
@@ -48,6 +49,15 @@
 - **score = 0.7×jaccard + 0.3×结构相似** → top N（默认 6）落库。
 - 合并建议：下线列少/行少的一方，保留列并集、`extra_in_drop`、`missing_in_drop`、动作清单。
 - 失败态：列 < 2 的表不参与；人工 `dismissed` 的对不再出现在推荐列表。
+
+### C. 敏感标签沿相似表对同步 `backend/src/services/tag_sync_service.py`
+
+- 入口：`GET /api/duplicates/{pair_id}/tag-sync/preview`（只读预览）+ `POST .../apply`（应用），权限动作 `tag:sync`（admin/analyst/viewer 均可用，复用 `tag:write` 同档限流）。
+- 传播源严格限定 `source=manual` 且 `tag_name` 以 `sensitive:` 开头的人工敏感结论；`inferred` 标签不参与，避免算法猜测二次扩散。
+- 匹配列复用引擎 B 的 `suggestion.merged_columns`（缺失则现场重算 `structure_similarity`），手机列的 `mobile_phone` / `phone_no` 经同义词与后缀归一化后视为同列。
+- 每个匹配列对按纯函数 `classify_sync_item` 归并为三类：`apply`（目标列无敏感标签可补）、`skipped`（同名标签 `tag_exists` 或已有任意敏感标签 `sensitive_exists`，保留原结论）、`conflict`（两列推断类型都明确且互不一致 `semantic_type_conflict`，附跳过原因；unknown/ambiguous/未推断不判冲突）。
+- 应用只对 `apply` 项插入缺失标签（manual、confidence=1.0、tagged_by=当前用户），插入前复查 + `uq_tag_column_name` 唯一约束双重保证幂等，重复执行 `created=0`；整个请求在单事务内，任一写入失败由 `get_db` 统一回滚，两张表保持原样，并写 `tag.sync_apply` 审计。
+- 前端 `/duplicates` 详情内 `TagSyncPanel` 展示补标 / 跳过 / 冲突三个计数与逐条原因，应用后刷新预览。
 
 ## 快速启动
 

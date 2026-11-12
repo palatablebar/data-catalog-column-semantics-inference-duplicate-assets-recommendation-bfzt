@@ -133,6 +133,55 @@ export interface DiffRow {
   similarity: number
 }
 
+export type TagSyncState = 'apply' | 'skipped' | 'conflict'
+
+export interface TagSyncItem {
+  state: TagSyncState
+  reason_code: string
+  reason: string
+  tag: TagItem
+  direction: string
+  source_asset_key: string
+  target_asset_key: string
+  source_column: {
+    id: string
+    column_name: string
+    data_type: string
+    inferred_type: ColumnSemanticType | null
+    inference_source: 'auto' | 'manual' | null
+    confidence: number
+  }
+  target_column: {
+    id: string
+    column_name: string
+    data_type: string
+    inferred_type: ColumnSemanticType | null
+    inference_source: 'auto' | 'manual' | null
+    confidence: number
+  }
+}
+
+export interface TagSyncPreview {
+  pair_id: string
+  left: PairAsset
+  right: PairAsset
+  matched_column_pairs: number
+  items: TagSyncItem[]
+  summary: {
+    apply: number
+    skipped: number
+    conflict: number
+    total: number
+  }
+}
+
+export interface TagSyncApplyResult {
+  pair_id: string
+  created: number
+  summary: TagSyncPreview['summary']
+  preview: TagSyncPreview
+}
+
 export interface IngestJob {
   id: string
   job_name: string

@@ -152,6 +152,8 @@
                 当前角色无 duplicate:merge 权限
               </p>
             </aside>
+
+            <TagSyncPanel :pair-id="detail.id" />
           </div>
         </template>
       </section>
@@ -166,6 +168,7 @@ import ErrorNotice from '../components/common/ErrorNotice.vue'
 import PermissionHint from '../components/common/PermissionHint.vue'
 import SimilarityBar from '../components/common/SimilarityBar.vue'
 import DiffColumnsTable from '../components/catalog/DiffColumnsTable.vue'
+import TagSyncPanel from '../components/catalog/TagSyncPanel.vue'
 import {
   dismissPair,
   fetchPair,
