@@ -1,0 +1,223 @@
+/* 等高线 + 坐标网格底纹；组件级样式集中在各自 SFC 的 scoped style 里。 */
+.atlas-surface {
+  position: relative;
+  background-color: var(--sand);
+  background-image:
+    linear-gradient(to right, color-mix(in oklch, var(--line) 42%, transparent) 1px, transparent 1px),
+    linear-gradient(to bottom, color-mix(in oklch, var(--line) 42%, transparent) 1px, transparent 1px),
+    radial-gradient(
+      ellipse 140% 90% at 82% -10%,
+      color-mix(in oklch, var(--moss-wash) 55%, transparent) 0%,
+      transparent 58%
+    ),
+    radial-gradient(
+      ellipse 120% 80% at 8% 108%,
+      color-mix(in oklch, var(--brick-wash) 40%, transparent) 0%,
+      transparent 60%
+    );
+  background-size:
+    48px 48px,
+    48px 48px,
+    100% 100%,
+    100% 100%;
+}
+
+.contour-field {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  opacity: 0.5;
+  background-image:
+    repeating-radial-gradient(
+      ellipse 62% 44% at 18% 22%,
+      transparent 0 26px,
+      color-mix(in oklch, var(--line) 55%, transparent) 26px 27px
+    ),
+    repeating-radial-gradient(
+      ellipse 48% 62% at 86% 76%,
+      transparent 0 34px,
+      color-mix(in oklch, var(--line) 40%, transparent) 34px 35px
+    );
+}
+
+.ink-panel {
+  background: color-mix(in oklch, var(--sand-raise) 82%, transparent);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-md);
+  box-shadow: 0 1px 0 color-mix(in oklch, var(--ink) 6%, transparent);
+}
+
+.ink-rule {
+  border: 0;
+  border-top: 1px dashed var(--line);
+  margin: 0;
+}
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 14px;
+  border: 1px solid var(--ink);
+  background: transparent;
+  color: var(--ink);
+  border-radius: var(--radius-sm);
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  transition:
+    background 180ms var(--ease),
+    color 180ms var(--ease),
+    transform 180ms var(--ease);
+}
+
+.btn:hover:not(:disabled) {
+  background: var(--ink);
+  color: var(--sand);
+}
+
+.btn:active:not(:disabled) {
+  transform: translateY(1px);
+}
+
+.btn:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+.btn--primary {
+  background: var(--moss);
+  border-color: var(--moss);
+  color: var(--sand-raise);
+}
+
+.btn--primary:hover:not(:disabled) {
+  background: color-mix(in oklch, var(--moss) 82%, var(--ink));
+  border-color: var(--ink);
+  color: var(--sand-raise);
+}
+
+.btn--danger {
+  border-color: var(--brick);
+  color: var(--brick);
+}
+
+.btn--danger:hover:not(:disabled) {
+  background: var(--brick);
+  color: var(--sand-raise);
+}
+
+.btn--ghost {
+  border-color: var(--line);
+  color: var(--ink-soft);
+}
+
+.btn--ghost:hover:not(:disabled) {
+  background: var(--sand-deep);
+  color: var(--ink);
+}
+
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.field__label {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--ink-faint);
+}
+
+.field input,
+.field select {
+  padding: 7px 10px;
+  border: 1px solid var(--line);
+  border-radius: var(--radius-sm);
+  background: var(--sand-raise);
+  color: var(--ink);
+  font-family: var(--font-mono);
+  font-size: 12px;
+  transition: border-color 160ms var(--ease);
+}
+
+.field input:focus,
+.field select:focus {
+  outline: none;
+  border-color: var(--moss);
+}
+
+.chip-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.data-table {
+  font-family: var(--font-mono);
+  font-size: 11.5px;
+}
+
+.data-table th {
+  text-align: left;
+  font-weight: 400;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  font-size: 9.5px;
+  color: var(--ink-faint);
+  border-bottom: 1px solid var(--line);
+  padding: 6px 8px;
+}
+
+.data-table td {
+  padding: 7px 8px;
+  border-bottom: 1px dashed var(--line-soft);
+  vertical-align: top;
+}
+
+.data-table tbody tr {
+  transition: background 160ms var(--ease);
+}
+
+.data-table tbody tr:hover {
+  background: color-mix(in oklch, var(--moss-wash) 45%, transparent);
+}
+
+.data-table tbody tr.is-selected {
+  background: color-mix(in oklch, var(--moss-wash) 70%, transparent);
+}
+
+.empty-state {
+  padding: 28px 18px;
+  border: 1px dashed var(--line);
+  border-radius: var(--radius-md);
+  color: var(--ink-soft);
+  font-family: var(--font-mono);
+  font-size: 12px;
+  background: color-mix(in oklch, var(--sand-raise) 60%, transparent);
+}
+
+.error-notice {
+  border: 1px solid var(--brick-soft);
+  background: var(--brick-wash);
+  color: var(--brick);
+  padding: 8px 12px;
+  border-radius: var(--radius-sm);
+  font-family: var(--font-mono);
+  font-size: 11.5px;
+}
+
+@media (max-width: 1279px) {
+  :root {
+    --nav-width: 176px;
+  }
+}
+
+@media (max-width: 767px) {
+  :root {
+    --nav-width: 0px;
+  }
+}
